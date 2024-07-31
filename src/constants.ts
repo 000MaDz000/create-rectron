@@ -30,7 +30,7 @@ app.whenReady().then(createWindow);
 export const NORMAL_FILE_CONTENT = `const { app, BrowserWindow } = require('electron');
 const path = require('path');
 const DEV_URL = "http://localhost:3000";
-const PRODUCTION_FILE = path.join(__dirname, "../index.html");
+const PRODUCTION_FILE = path.join(__dirname, "../build/index.html");
 const createWindow = () => {
     const window = new BrowserWindow();
     if (process.env.NODE_ENV === "development") {
