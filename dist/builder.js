@@ -8,6 +8,7 @@ const cli_options_1 = require("./cli-options");
 const colors_1 = __importDefault(require("colors"));
 const path_1 = require("path");
 const promises_1 = require("fs/promises");
+const constants_1 = require("./constants");
 colors_1.default.enable();
 (async () => {
     await cli_options_1.OptionsPromise;
@@ -44,106 +45,40 @@ colors_1.default.enable();
     console.log("creating the nedded files".yellow, "\n");
     const publicDir = (0, path_1.join)(newCWD, "public");
     const electronFile = (0, path_1.join)(publicDir, "electron.js");
-    await (0, promises_1.writeFile)(electronFile, `
-            if (process.env.NODE_ENV === "development") {
-                ${cli_options_1.options["--typescript"] ? `require("ts-node").register();` : ""}
-                require("../main/index.ts");
-            }
-            else {
-                require("./main/index.js");
-            }
-            `);
+    await (0, promises_1.writeFile)(electronFile, (0, constants_1.ELECTRON_FILE_CONTENT)(cli_options_1.options));
     console.log(electronFile.green, "created".green);
-    const typescriptFileContent = `
-            import {app, BrowserWindow} from "electron";
-            import {join} from "path";
-
-            const DEV_URL = "http://localhost:3000";
-            const PRODUCTION_FILE = join(__dirname, "../index.html");
-
-            const createWindow = () => {
-                const window = new BrowserWindow();
-                
-                if(process.env.NODE_ENV === "development") {
-                    window.loadURL(DEV_URL);
-                }
-                else {
-                    window.loadFile(PRODUCTION_FILE)
-                }
-
-                window.show();
-            }
-
-            app.whenReady().then(createWindow);
-        `;
-    const normalFileContent = `
-            const { app, BrowserWindow } = require('electron');
-            const path = require('path');
-
-            const DEV_URL = "http://localhost:3000";
-            const PRODUCTION_FILE = path.join(__dirname, "../index.html");
-
-            const createWindow = () => {
-                const window = new BrowserWindow();
-
-                if (process.env.NODE_ENV === "development") {
-                    window.loadURL(DEV_URL);
-                } else {
-                    window.loadFile(PRODUCTION_FILE);
-                }
-
-                window.show();
-            };
-
-            app.whenReady().then(createWindow);
-
-            app.on('window-all-closed', () => {
-                if (process.platform !== 'darwin') {
-                    app.quit();
-                }
-            });
-
-            app.on('activate', () => {
-                if (BrowserWindow.getAllWindows().length === 0) {
-                    createWindow();
-                }
-            });
-        `;
+    const typescriptFileContent = constants_1.TYPESCRIPT_FILE_CONTENT;
+    const normalFileContent = constants_1.NORMAL_FILE_CONTENT;
     const mainDir = (0, path_1.join)(newCWD, "main");
-    const indexFile = (0, path_1.join)(newCWD, mainDir, "index." + (cli_options_1.options["--typescript"] ? "ts" : "js"));
-    await (0, promises_1.writeFile)(indexFile, cli_options_1.options["--typescript"] ? typescriptFileContent : normalFileContent);
+    const indexFile = (0, path_1.join)(mainDir, "index." + (cli_options_1.options["--typescript"] ? "ts" : "js"));
+    await (0, promises_1.mkdir)(mainDir).catch(() => { });
+    await (0, promises_1.writeFile)(indexFile, cli_options_1.options["--typescript"] ? typescriptFileContent : normalFileContent).catch(() => { });
     console.log(indexFile.green, "created".green, "\n");
     const packageFile = (0, path_1.join)(newCWD, "package.json");
-    const data = await import(packageFile);
-    data.scripts.build = "react-scripts build && tsc ./main/index.ts --outDir ./build --esModuleInterop --skipLibCheck";
+    const data = JSON.parse((await (0, promises_1.readFile)(packageFile)).toString());
+    data.main = "./build/electron.js";
+    data.scripts.build = "react-scripts build" + (cli_options_1.options["--typescript"] ? " && tsc ./main/index.ts --outDir ./build --esModuleInterop --skipLibCheck" : "");
     data.scripts.main = "cross-env NODE_ENV=development nodemon -w ./main/* --ext js,mjs,cjs,json,ts --exec electron .";
-    await (0, promises_1.writeFile)(packageFile, data);
+    await (0, promises_1.writeFile)(packageFile, JSON.stringify(data));
     console.log(packageFile.green, "updated".green, "\n");
     if (cli_options_1.options["--tailwindcss"]) {
         const tailwindFile = (0, path_1.join)(newCWD, "tailwind.config.js");
         const IndexCssFile = (0, path_1.join)(newCWD, "src", "index.css");
-        const indexCssContent = `
-                @tailwind base;
-                @tailwind components;
-                @tailwind utilities;
-                @tailwind variants;
-            `;
-        const tailwindContent = `
-                /** @type {import('tailwindcss').Config} */
-                module.exports = {
-                content: [
-                    "./src/**/*.{js,jsx,ts,tsx}",
-                ],
-                theme: {
-                    extend: {},
-                    fontFamily: {
-                    main: ["main"]
-                    }
-                },
-                plugins: [],
-                }
-`;
+        const indexCssContent = cli_options_1.options["--tailwindcss"] ? constants_1.INDEX_CSS_FILE_CONTENT : "";
+        const tailwindContent = constants_1.TAILWIND_CONFIG_CONTENT;
         await (0, promises_1.writeFile)(tailwindFile, tailwindContent);
         await (0, promises_1.writeFile)(IndexCssFile, indexCssContent);
+    }
+    // set the config of ts-node
+    if (cli_options_1.options["--typescript"]) {
+        const tsConfigFile = (0, path_1.join)(newCWD, "tsconfig.json");
+        const content = JSON.parse((await (0, promises_1.readFile)(tsConfigFile)).toString());
+        content["ts-node"] = {
+            "files": true,
+            "compilerOptions": {
+                "module": "NodeNext"
+            }
+        };
+        await (0, promises_1.writeFile)(tsConfigFile, JSON.stringify(content));
     }
 })();
