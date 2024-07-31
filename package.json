@@ -1,10 +1,12 @@
 {
   "name": "create-rectron",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "keywords": [
+    "create-rectron",
     "react",
     "electron",
-    "typescript"
+    "typescript",
+    "tailwindcss"
   ],
   "description": "Create React + Electron Application with no config",
   "repository": {
