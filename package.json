@@ -1,6 +1,6 @@
 {
   "name": "create-rectron",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "keywords": [
     "create-rectron",
     "react",
@@ -19,9 +19,7 @@
     "create-react-electron-app": "dist/index.js"
   },
   "files": [
-    "dist",
-    "src",
-    ".gitignore"
+    "dist"
   ],
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
