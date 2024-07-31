@@ -119,9 +119,11 @@ colors.enable();
         }
 
         try {
+            console.log("running 'npm run build'", "its required for first application initialization only".yellow, "\n");
             await new Promise(r => {
                 spawn("npm", ["run", "build"]).on("exit", r);
             });
+            console.log("build success".green);
         }
         catch (err) { }
 
