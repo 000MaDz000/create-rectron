@@ -118,6 +118,12 @@ colors.enable();
             await writeFile(tsConfigFile, JSON.stringify(content));
         }
 
+        try {
+            await new Promise(r => {
+                spawn("npm", ["run", "build"]).on("exit", r);
+            });
+        }
+        catch (err) { }
 
         // initial git commit
         try {
