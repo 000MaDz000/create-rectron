@@ -82,6 +82,7 @@ colors.enable();
 
         const packageFile = join(newCWD, "package.json");
         const data = JSON.parse((await readFile(packageFile)).toString());
+        data.homepage = "./";
         data.main = "./build/electron.js";
         data.scripts.build = "react-scripts build" + (options["--typescript"] ? " && tsc ./main/index.ts --outDir ./build --esModuleInterop --skipLibCheck" : "");
         data.scripts.main = "cross-env NODE_ENV=development nodemon -w ./main/* --ext js,mjs,cjs,json,ts --exec electron .";
