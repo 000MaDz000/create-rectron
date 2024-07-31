@@ -1,6 +1,6 @@
 {
-  "name": "create-rectron-app",
-  "version": "1.0.3",
+  "name": "create-rectron",
+  "version": "1.0.1",
   "keywords": [
     "react",
     "electron",
@@ -9,15 +9,17 @@
   "description": "Create React + Electron Application with no config",
   "repository": {
     "type": "git",
-    "url": "https://github.com/000madz000/create-rectron-app"
+    "url": "https://github.com/000madz000/create-rectron"
   },
   "author": "MaDz Developer",
   "license": "MIT",
   "bin": {
-    "create-rectron-app": "node dist/index.js"
+    "create-react-electron-app": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "src",
+    ".gitignore"
   ],
   "devDependencies": {
     "@types/cross-spawn": "^6.0.6",
