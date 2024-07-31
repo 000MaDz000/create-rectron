@@ -1,0 +1,27 @@
+{
+  "name": "create-rectron-app",
+  "version": "1.0.2",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "create-rectron-app": "./dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cross-spawn": "^6.0.6",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^5.3.6",
+    "@types/validate-npm-package-name": "^4.0.2",
+    "colors": "^1.4.0",
+    "cross-spawn": "^7.0.3",
+    "validate-npm-package-name": "^5.0.1"
+  }
+}
