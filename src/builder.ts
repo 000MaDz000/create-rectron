@@ -44,7 +44,7 @@ colors.enable();
 
         console.log("installing dependecies..".yellow, "\n");
         await new Promise((r) => {
-            const args = ["install", "nodemon", "typescript", "electron", "@types/electron", "ts-node", "cross-env"];
+            const args = ["install", "nodemon", "electron", "@types/electron", "ts-node", "cross-env"];
             if (options["--tailwindcss"]) args.push("tailwindcss");
 
             args.push("--save-dev");
