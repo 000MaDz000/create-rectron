@@ -111,7 +111,7 @@ colors.enable();
             content["ts-node"] = {
                 "files": true,
                 "compilerOptions": {
-                    "module": "NodeNext"
+                    "module": "CommonJS"
                 }
             }
 
